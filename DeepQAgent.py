@@ -1,16 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
-
 import numpy as np
-from PIL import Image
-import cv2 #opencv
-import sys
-import io
-import time
-import pandas as pd
-from IPython.display import clear_output
-from random import randint
 import os
 
 from selenium import webdriver
@@ -19,10 +10,6 @@ from selenium.webdriver.common.keys import Keys
 
 
 import random
-import pickle
-from io import BytesIO
-import base64
-import json
 import time
 
 
@@ -151,7 +138,7 @@ class ConvNN(nn.Module):
         self.final_epsilon = 0.0001
         self.initial_epsilon = 0.1
         self.number_of_iterations = 5000000
-        self.replay_memory_size = 100000
+        self.replay_memory_size = 60000
         self.minibatch_size = 64
 
         self.conv1 = nn.Conv2d(4,32,8,4,2)
@@ -217,10 +204,7 @@ def train(model, start):
         if torch.cuda.is_available():
             action = action.cuda()
 
-        random_action = random.random() <= epsilon
-        action_index = [torch.randint(model.number_of_actions, torch.Size([]), dtype=torch.int)
-                        if random_action
-                        else torch.argmax(output)][0]
+        action_index = [torch.argmax(output)][0]
 
         if torch.cuda.is_available():
             action_index = action_index.cuda()
